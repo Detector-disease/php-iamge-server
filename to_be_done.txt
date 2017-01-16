@@ -1,0 +1,4 @@
+1.Screenshot for android app showing image.
+2.Uploads it to server 
+3.Shows details of images. Make it more informative.
+4.Show processed image in the list with parameters.

@@ -14,15 +14,12 @@ $upload_url = '/android_upload/'.$upload_path;
 
 //response array 
 $response = array(); 
-
+echo getFileName();
 
 if($_SERVER['REQUEST_METHOD']=='POST'){
 
 	//checking the required parameters from the request 
 	if(isset($_POST['name']) and isset($_FILES['image']['name'])){
-
-		//connecting to the database 
-		$con = mysqli_connect(HOST,USER,PASS,DB) or die('Unable to Connect...');
 
 		//getting name from the request 
 		$name = $_POST['name'];
@@ -44,7 +41,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 			//saving the file 
 			move_uploaded_file($_FILES['image']['tmp_name'],$file_path);
 			$sql = "INSERT INTO `db_images` (`id`, `url`, `name`) VALUES (NULL, '$file_url', '$name');";
-			echo $sql;
+			
 			//adding the path and name to database 
 			if(mysqli_query($con,$sql)){
 				//filling response array with values 
@@ -60,8 +57,6 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 		//displaying the response 
 		echo json_encode($response);
 
-		//closing the connection 
-		mysqli_close($con);
 	}else{
 		$response['error']=true;
 		$response['message']='Please choose a file';
@@ -73,17 +68,15 @@ We are generating the file name
 so this method will return a file name for the image to be upload 
 */
 function getFileName(){
-$con = mysqli_connect(HOST,USER,PASS,DB) or die('Unable to Connect...');
-echo "Connect";
 
-$raw = mysqli_query($con,"SELECT max(id) as id FROM db_images");
+
+$con = mysqli_connect(HOST,USER,PASS,DB) or die('Unable to Connect...');
+
+$raw = mysqli_query($con,"SELECT max(id) as id FROM `db_images`");
 $result = mysqli_fetch_array($raw);
 
-
-mysqli_close($con);
-
 if($result['id']==null)
-return 1; 
+	return 1; 
 else 
-return ++$result['id']; 
+	return ++$result['id']; 
 }

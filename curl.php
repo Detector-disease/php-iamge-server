@@ -1,4 +1,6 @@
 <?php
+require_once 'dbDetails.php';
+
 
 function isLocal ()
 {
@@ -14,7 +16,10 @@ if(isLocal())
 
 }else{
 	// $file_name_with_full_path = '/home/olbx/public_html/android_upload/adrian.jpg';
-  $file_name_with_full_path = '/home/olbx/public_html/android_upload/uploads/3.jpg';
+  // $file_name = getFileName();
+  $file_name = $_GET['filename'];
+  $image_id = $_GET['id'];
+  $file_name_with_full_path = '/home/olbx/public_html/android_upload/uploads/'.$file_name;
 
  }
 
@@ -45,10 +50,23 @@ $post = array('image'=> $cFile);
 curl_setopt($cURL, CURLOPT_POST,1);
 curl_setopt($cURL, CURLOPT_POSTFIELDS, $post);
 
-
+curl_setopt($cURL,CURLOPT_RETURNTRANSFER,TRUE);
 
 $result = curl_exec($cURL);
-
 curl_close($cURL);
+
+$result_arr = json_decode($result, true);
+
+// echo '<a href= "https://www.pythonanywhere.com/user/zaverichintan/files/home/zaverichintan/cv_api/face_detector/'.$result_arr["url"].'">Processed image</a>';
+
+$params = json_encode($result_arr["faces"]);
+
+$sql = 'UPDATE `db_images` SET processed_image="'.$result_arr["url"].'", parameters="'.$params.'" WHERE id='.$image_id;
+echo $sql;
+if (mysqli_query($con, $sql)) {
+    echo "Record updated successfully";
+} else {
+    echo "Error updating record: " . mysqli_error($con);
+}
 
 ?>
