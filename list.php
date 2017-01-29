@@ -2,6 +2,12 @@
 ob_start();
 session_start();
 include_once 'dbDetails.php';
+
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 ?>
 
 <!DOCTYPE html>
@@ -9,12 +15,27 @@ include_once 'dbDetails.php';
 <head>
   <title>List of images</title>
   <meta charset="utf-8">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <img src="favicon.ico" class="img-thumbnail" alt="Image" width="50" height="50"/>
+      <a class="navbar-brand" href="#">Cell Detection</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Home</a></li>
+      <li><a href="#">About Us</a></li>
+    </ul>
+  </div>
+</nav>
+
 
 <div class="container">
   <h2>List of images</h2>
@@ -25,7 +46,6 @@ include_once 'dbDetails.php';
         <th>ID</th>
         <th>Analyze</th>
         <th>Name</th>
-        <th>Link</th>
         <th>Image</th>
         <th>Processed Image</th>
 
@@ -43,18 +63,51 @@ include_once 'dbDetails.php';
         echo "<tr>";
          echo "<td>".$row['id']."</td>";
 
-         // echo '<td><button id="ajaxcall">Analyze</button></td>';
+         
+         if($row["parameters"] === NULL){
+          $array_params = json_decode('{"Null":"Null"}',true);
+         }else{
+          $array_params = json_decode($row["parameters"], true);
+         }
+
+         if($row['processed_image'] == ''){
+          $img = 'http://placehold.it/304x236';
+         }else{
+          $img = 'https://www.pythonanywhere.com/user/zaverichintan/files/home/zaverichintan/cv_api/cell_detector/'.$row['processed_image'];
+         }
          echo '<td><a id="ajaxcall" href="curl.php?filename='.$file_name.'&id='.$row['id'].'">Analyze</a></td>';
 
          echo "<td>".$row['name']."</td>";
-         echo '<td><a href="#" data-toggle="popover" data-placement="bottom" title="Parameters" data-content="'.$row["parameters"].'">Parameters</a></td>';
+         // echo '<td><a href="#" data-toggle="popover" data-placement="bottom" title="Parameters" data-content="'.$row["parameters"].'">Parameters</a></td>';
          echo '<td><img src="'.$row['url'].'" class="img-thumbnail" alt="Image" width="304" height="236"></td>';
-       	 echo '<td><img src="https://www.pythonanywhere.com/user/zaverichintan/files/home/zaverichintan/cv_api/face_detector/'.$row['processed_image'].'" class="img-thumbnail" alt="Image" width="304" height="236"></td>';
+         echo '<td><img src="'.$img.'" class="img-thumbnail" alt="Image" width="304" height="236"></td>';
+         echo '
+          <td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal'.$row['id'].'">Open</button>
 
+            <div class="modal fade" id="myModal'.$row['id'].'" role="dialog">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" style="fonts" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Processed Image</h4>
+                  </div>
+                  <div class="modal-body">
+                    <img src="https://www.pythonanywhere.com/user/zaverichintan/files/home/zaverichintan/cv_api/cell_detector/'.$row['processed_image'].'" class="img-thumbnail" alt="Image">
+                    <p>';
+                    foreach ($array_params as $key => $value) {
+                       echo $key.':'.$value.'\n';
+                    }
+                    echo '</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </td>';
         echo "</tr>";
       }
     ?>
       
+
     </tbody>
   </table>
 
@@ -69,7 +122,7 @@ $(document).ready(function(){
 //     //     alert("ajax");
 //     // });
 //   alert("asdf");
-  
+
 // });
 
 </script>

@@ -12,7 +12,7 @@ function isLocal ()
 
 if(isLocal())
 {
-	$file_name_with_full_path = '/opt/lampp/htdocs/android_upload/adrian.jpg';
+	$file_name_with_full_path = '/opt/lampp/htdocs/android_upload/6.bmp';
 
 }else{
 	// $file_name_with_full_path = '/home/olbx/public_html/android_upload/adrian.jpg';
@@ -20,13 +20,13 @@ if(isLocal())
   $file_name = $_GET['filename'];
   $image_id = $_GET['id'];
   $file_name_with_full_path = '/home/olbx/public_html/android_upload/uploads/'.$file_name;
+  echo ($file_name_with_full_path);
+  
 
  }
 
 
-
-
-$url = 'http://zaverichintan.pythonanywhere.com/face_detection/detect/';
+$url = 'http://zaverichintan.pythonanywhere.com/cell_detection/detect/';
 
 $cURL = curl_init();
 
@@ -56,13 +56,14 @@ $result = curl_exec($cURL);
 curl_close($cURL);
 
 $result_arr = json_decode($result, true);
+var_dump($result_arr);
 
 // echo '<a href= "https://www.pythonanywhere.com/user/zaverichintan/files/home/zaverichintan/cv_api/face_detector/'.$result_arr["url"].'">Processed image</a>';
 
 $params = json_encode($result_arr["faces"]);
 
 $sql = 'UPDATE `db_images` SET processed_image="'.$result_arr["url"].'", parameters="'.$params.'" WHERE id='.$image_id;
-echo $sql;
+// echo $sql;
 if (mysqli_query($con, $sql)) {
     echo "Record updated successfully";
 } else {
