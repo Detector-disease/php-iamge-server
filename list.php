@@ -39,8 +39,14 @@ error_reporting(E_ALL);
 
 <div class="container">
   <h2>List of images</h2>
-  <p>Shows list of all images</p>            
-  <table class="table table-striped">
+  <p>Shows list of all images</p>    
+  <form action="phpupload.php" method="post" enctype="multipart/form-data">
+      Select image to upload:
+      <input type="file" name="fileToUpload" id="fileToUpload">
+      <input type="submit" value="Upload Image" name="submit">
+  </form>
+          
+  <table class="table table-striped  table-bordered table-hover">
     <thead>
       <tr>
         <th>ID</th>
@@ -71,7 +77,7 @@ error_reporting(E_ALL);
          }
 
          if($row['processed_image'] == ''){
-          $img = 'http://placehold.it/304x236';
+          $img = 'default.png';
          }else{
           $img = 'https://www.pythonanywhere.com/user/zaverichintan/files/home/zaverichintan/cv_api/cell_detector/'.$row['processed_image'];
          }
@@ -88,15 +94,27 @@ error_reporting(E_ALL);
               <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <button type="button" style="fonts" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" style="font" class="close" data-dismiss="modal" >&times;</button>
                     <h4 class="modal-title">Processed Image</h4>
                   </div>
                   <div class="modal-body">
                     <img src="https://www.pythonanywhere.com/user/zaverichintan/files/home/zaverichintan/cv_api/cell_detector/'.$row['processed_image'].'" class="img-thumbnail" alt="Image">
                     <p>';
-                    foreach ($array_params as $key => $value) {
-                       echo $key.':'.$value.'\n';
-                    }
+
+                      foreach ($array_params as $key => $value) {
+                        // echo $key;
+                        if(!is_array($value)){
+                          echo $value;
+                        }
+                        else{
+                         foreach ($value as $key_in => $value_in) {
+                             echo $key_in.' : '.$value_in;
+                             echo '<br>';
+                          }
+                             
+                        }
+                        echo '<br>';
+                      }
                     echo '</p>
                   </div>
                 </div>
@@ -116,14 +134,6 @@ error_reporting(E_ALL);
 $(document).ready(function(){
     $('[data-toggle="popover"]').popover();   
 });
-
-// $("#ajaxcall").click(function(){
-//     // $.get("curl.php", function(data, status){
-//     //     alert("ajax");
-//     // });
-//   alert("asdf");
-
-// });
 
 </script>
 </div>

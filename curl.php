@@ -59,13 +59,44 @@ $result_arr = json_decode($result, true);
 var_dump($result_arr);
 
 // echo '<a href= "https://www.pythonanywhere.com/user/zaverichintan/files/home/zaverichintan/cv_api/face_detector/'.$result_arr["url"].'">Processed image</a>';
+function getimg($url) {         
+    $headers[] = 'Accept: image/gif, image/x-bitmap, image/jpeg, image/pjpeg';              
+    $headers[] = 'Connection: Keep-Alive';         
+    $headers[] = 'Content-type: application/x-www-form-urlencoded;charset=UTF-8';         
+    $user_agent = 'php';         
+    $process = curl_init($url);         
+    curl_setopt($process, CURLOPT_HTTPHEADER, $headers);         
+    curl_setopt($process, CURLOPT_HEADER, 0);         
+    curl_setopt($process, CURLOPT_USERAGENT, $user_agent); //check here         
+    curl_setopt($process, CURLOPT_TIMEOUT, 30);         
+    curl_setopt($process, CURLOPT_RETURNTRANSFER, 1);         
+    curl_setopt($process, CURLOPT_FOLLOWLOCATION, 1);         
+    $return = curl_exec($process);         
+    curl_close($process);         
+    return $return;     
+} 
 
-$params = json_encode($result_arr["faces"]);
 
-$sql = 'UPDATE `db_images` SET processed_image="'.$result_arr["url"].'", parameters="'.$params.'" WHERE id='.$image_id;
-// echo $sql;
+
+$params = json_encode($result_arr["parameters"]);
+$params = "'".$params."'";
+
+$sql = 'UPDATE `db_images` SET processed_image="'.$result_arr["url"].'", parameters='.$params.' WHERE id='.$image_id;
+echo $sql;
+
 if (mysqli_query($con, $sql)) {
     echo "Record updated successfully";
+
+$imgurl = 'https://www.pythonanywhere.com/user/zaverichintan/files/home/zaverichintan/cv_api/cell_detector/'.$result_arr["url"];
+
+echo $imgurl;
+
+
+$imagename= basename($imgurl);
+if(file_exists('./uploads_process/'.$imagename)){continue;} 
+$image = getimg($imgurl); 
+file_put_contents('uploads_process/'.$imagename,$image); 
+
 } else {
     echo "Error updating record: " . mysqli_error($con);
 }
