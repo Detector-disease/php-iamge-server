@@ -73,9 +73,12 @@ if ($uploadOk == 0) {
         echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded."; 
 
 
-        $sql = "INSERT INTO `db_images` (`id`, `url`, `name`) VALUES (NULL, '$file_url', '$name');";
-        echo $sql;
-        mysqli_query($con,$sql);            
+        $sql = "INSERT INTO `db_images` (`id`, `url`, `name`,`on_server`) VALUES (NULL, '$file_url', '$name', '1');";
+        //echo $sql;
+        mysqli_query($con,$sql);
+        $url = 'olbx.in/android_upload/list.php';
+        header('Location: ' . $url, true, $statusCode);
+        die();
 
     } else {
         echo "Sorry, there was an error uploading your file.";
@@ -84,7 +87,7 @@ if ($uploadOk == 0) {
 
 
 /*
-We are generating the file name 
+iWe are generating the file name 
 so this method will return a file name for the image to be upload 
 */
 function getFileName(){
@@ -101,4 +104,3 @@ else
     return ++$result['id']; 
 }
 ?>
-
