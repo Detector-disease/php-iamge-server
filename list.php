@@ -39,13 +39,15 @@ error_reporting(E_ALL);
 
 <div class="container">
   <h2>List of images</h2>
-  <p>Shows list of all images</p>    
   <form action="phpupload.php" method="post" enctype="multipart/form-data">
       Select image to upload:
-      <input type="file" name="fileToUpload" id="fileToUpload">
+      <input type="file" name="fileToUpload" id="fileToUpload"><br/>
       <input type="submit" value="Upload Image" name="submit">
   </form>
-          
+<br/>
+<br/>
+<hr>
+<br/>
   <table class="table table-striped  table-bordered table-hover">
     <thead>
       <tr>
@@ -54,6 +56,7 @@ error_reporting(E_ALL);
         <th>Name</th>
         <th>Image</th>
         <th>Processed Image</th>
+        <th>Show</th>
 
       </tr>
     </thead>
@@ -78,8 +81,11 @@ error_reporting(E_ALL);
 
          if($row['processed_image'] == ''){
           $img = 'default.png';
-         }else{
+         }else if ($row['on_server'] == 1){
           $img = 'https://www.pythonanywhere.com/user/zaverichintan/files/home/zaverichintan/cv_api/cell_detector/'.$row['processed_image'];
+         }else{
+             
+          $img = 'http://olbx.in/android_upload/processed_images/'.$row['processed_image'];
          }
          echo '<td><a id="ajaxcall" href="curl.php?filename='.$file_name.'&id='.$row['id'].'">Analyze</a></td>';
 
@@ -139,4 +145,4 @@ $(document).ready(function(){
 </div>
 
 </body>
-</html>
+</html> 
