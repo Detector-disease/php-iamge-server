@@ -103,8 +103,18 @@ error_reporting(E_ALL);
                     <button type="button" style="font" class="close" data-dismiss="modal" >&times;</button>
                     <h4 class="modal-title">Processed Image</h4>
                   </div>
-                  <div class="modal-body">
-                    <img src="https://www.pythonanywhere.com/user/zaverichintan/files/home/zaverichintan/cv_api/cell_detector/'.$row['processed_image'].'" class="img-thumbnail" alt="Image">
+                  <div class="modal-body">';
+                    
+                     if($row['processed_image'] == ''){
+                      $img = 'default.png';
+                     }else if ($row['on_server'] == 1){
+                      $img = 'https://www.pythonanywhere.com/user/zaverichintan/files/home/zaverichintan/cv_api/cell_detector/'.$row['processed_image'];
+                     }else{
+                         
+                      $img = 'http://olbx.in/android_upload/processed_images/'.$row['processed_image'];
+                     }        
+                  
+                    echo '<img src="'.$img.'" class="img-thumbnail" alt="Image" width="304" height="236">
                     <p>';
 
                       foreach ($array_params as $key => $value) {
@@ -145,4 +155,4 @@ $(document).ready(function(){
 </div>
 
 </body>
-</html> 
+</html>
